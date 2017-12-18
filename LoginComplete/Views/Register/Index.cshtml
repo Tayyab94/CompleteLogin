@@ -1,0 +1,153 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+}
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+
+<div class="container" style="margin-top:10%">
+    <div class="row">
+        <div class="col-md-4 col-md-offset-4 alert alert-info">
+            <h3 class="text-center">Login</h3>
+            <form id="loginForm">
+                <div id="msg"><ul style="color:red">Invalid User's Name/Password!</ul></div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
+                        <input class="form-control" type="email" name="Email" id="logEmail" placeholder="Email" />
+                    </div>
+                </div>
+     
+
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                        <input class="form-control" type="password" name="Password" id="logPassword" placeholder="Password" />
+                    </div>
+                </div>
+            </form>
+            <div class="form-group">
+                <button class="btn btn-info form-control" type="submit" onclick="Login()"><i class="glyphicon glyphicon-log-in"></i> Login</button>
+            </div>
+            <div class="form-group">
+                <a style="float:left">Forget Password ?</a><a style="float:right; cursor:pointer" onclick="SignUp()">Sign Up</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Design a Model with Registration form *@
+<div class="modal fade" id="ShowModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+                <h4 class="text-center text-info">Registration Form</h4>
+                <div id="message1">
+                    <div class="alert alert-success">
+                        <span class="glyphicon glyphicon-ok"></span><strong>
+                            Success Message! Your Registration is Completed succcessfuly!
+                            <br />Send an email to your Email Address with confirmation Link!<br />
+                            Please your Inbox
+                        </strong>
+                    </div>
+                </div>
+                <div id="message2">
+                    <div class="alert alert-danger">
+                        <span class="glyphicon glyphicon-remove"></span><strong>Error Message! Your Registration is not Completed succcessfuly!</strong>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <form id="Registration">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                            <input class="form-control" type="text" name="UserName" id="user" placeholder="UserName" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
+                            <input class="form-control" type="email" name="Email" id="Email" placeholder="Email" />
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                            <input class="form-control" type="password" name="Password" id="Password" placeholder="Password" />
+                        </div>
+                    </div>
+                </form>
+                <div class="form-group">
+                    <button class="btn btn-info form-control" type="submit" onclick="FormSave()"><i class="glyphicon glyphicon-registration-mark"></i> Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function SignUp() {
+        $("#ShowModal").modal();
+        $("#message1").hide();
+        $("#message2").hide();
+    }
+
+    function FormSave() {
+        var name = $("#user").val();  //here we are setting the values of the registration Form
+        var pass = $("#Password").val();
+        var eMail = $("#Email").val();
+
+
+        //Now we are going to set the name for the data enty validation
+        if (name == "" || pass == "" || eMail == "") {
+            $("#message1").hide();
+            $("#message2").show();
+            return false;
+        }
+        var data = $("#Registration").serialize();
+        $.ajax({
+            type: "post",
+            data: data,
+            url: "/Register/SaveData",
+            success: function (result) {
+                $("#message1").show();
+                $("#message2").hide();
+                $("#Registration")[0].reset();
+            }
+        });
+    }
+
+    // Login system
+
+    $("#msg").hide();
+    var Login = function () {
+        var data = $("#loginForm").serialize();
+        $.ajax({
+            type: "post",
+            url: "/Register/CheckValidUser",  //This Method is created in Register Controller
+            data: data,
+            success: function (result) {
+                if (result == "fial")  //If the Controller return to fail that mean the user is not valid , is shows invalid user /Pass
+                {
+                    $("#loginForm")[0].reset();
+                    $("#msg").show();
+
+                }
+                else   //if Controller return succes that mean the user is valid and move to the new View, Like Profile Page 
+                {
+                    window.location.href = "/Register/AfterLogin",
+                        $("#msg").hide();
+                }
+
+            }
+        })
+    }
+</script>

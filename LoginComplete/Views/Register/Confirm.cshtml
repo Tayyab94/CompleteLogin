@@ -1,0 +1,31 @@
+﻿
+@{
+    ViewBag.Title = "Confirm";
+}
+<br /><br />
+<div class="alert alert-warning" id="previous">
+    <strong>Confirm your Account</strong>
+    <input type="submit" class="btn btn-warning"  value="Confirm" onclick="Verified()"/>
+</div>
+
+<div class="alert alert-success" id="after" style="display:none">
+    <strong><span class="glyphicon glyphicon-ok"></span>Your Account is Activated Now</strong>
+    
+</div>
+<script>
+    function Verified()
+    {
+        $.ajax({
+            type: "post",                       //Now write a code when btn click call verified function and this  pass regId In RegistreConfirm Model Inside Registre Controller 
+            url: "/Register/RegistreConfirm",   //Copy this RegistreConfirm as same name and create new Method in Registre Controller Same Name
+            data: { 'regId': '@ViewBag.regID' },  //THis ViewBag.regId is Come from the RegistreController's Confirm Method'
+            success: function (msg)
+            {
+                $("#previous").hide();
+                $("#after").show();
+                alert(msg);
+            }
+
+        });
+    }
+</script>
