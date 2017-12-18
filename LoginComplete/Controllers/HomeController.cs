@@ -16,6 +16,7 @@ namespace LoginComplete.Controllers
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";
+            // something added
 
             return View();
         }
